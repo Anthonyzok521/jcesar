@@ -1,14 +1,11 @@
 /*
  * @author : Anthony Carrillo
- * @version : 0.0.1
+ * @version : 0.1.0
  */
 #include <iostream>
 #include <vector>
+#include <typeinfo>
 using namespace std;
-
-int toInt(char n){
-  return (int)(n - '0');
-}
 
 vector<int> abcAscii() // Function to get all the ascii values
 {
@@ -41,7 +38,18 @@ string jcesar(string word, int n) // Encryption function | n = move letter
     {
       /* cout<<"ASCII: "<<_<<endl; */
       if (word[i] == _)
-      {
+      {        
+        //Limit
+        if((int)word[i] + n > 90 && (int)word[i] + n < 97 || (int)word[i] + n > 122){
+          if(islower(word[i])){
+            int l = ((int)word[i] + n) - 123;
+            word[i] = (char)97 + l;    
+          }else{
+            int u = ((int)word[i] + n) - 91;
+            word[i] = (char)65 + u;    
+          }
+          break;
+        }
         /* cout<<"Letter: "<<(int)word[i]<<" "<<word[i]<<" "; */
         word[i] = (char)(int)word[i] + n;
         /* cout<<"To: "<<(int)word[i]<<" "<<word[i]<<" "<<endl; */
@@ -59,16 +67,21 @@ int main(int args, char **argv)
   {
     if (args != 0)
     {
+      string digit;
       int n = 1;
-      char digit;
-
+      
       if(args == 3){
-        digit = *argv[2];
+        digit = argv[2];
 
-        if(!isdigit(digit) || args > 3){      
+        if(!isdigit(*digit.c_str()) || args > 3){      
           throw "Parameter invalid";
         }
-        n = toInt(digit);        
+
+        if(atoi(digit.c_str()) > 26){
+          throw "Out range - limit is 26";
+        }
+
+        n = atoi(digit.c_str());
       }      
       
       cout << jcesar(argv[1], n) << endl;
